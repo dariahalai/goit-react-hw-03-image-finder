@@ -22,7 +22,7 @@ class ImageGallery extends Component {
     const { query } = this.props;
     const { page } = this.state;
     if (prevProps.query !== query) {
-      this.setState({ status: 'pending', page: 1 });
+      this.setState({ status: 'pending', page: 1, gallery:[] });
       this.fetchGallery(query, page);
     } else if (prevState.page !== page) {
       this.setState({ status: 'pending' });
@@ -40,7 +40,7 @@ class ImageGallery extends Component {
       key: '31431099-cb6424a99d97f67db3bc0cdc7',
       image_type: 'photo',
       orientation: 'horizontal',
-      PER_PAGE: 12,
+      per_page:12,
     });
 
     fetch(`${baseURL}?${PARAMS}`)
@@ -51,7 +51,7 @@ class ImageGallery extends Component {
           return this.setState({ status: 'idle' });
         }
 
-        this.setState(prevState =>({ gallery: [...prevState.gallery,...data.hits], status: 'resolved' }));
+        this.setState(prevState =>( { gallery:[...prevState.gallery,...data.hits], status: 'resolved' }));
       })
       .catch(error => this.setState({ error, status: 'rejected' }));
   };
