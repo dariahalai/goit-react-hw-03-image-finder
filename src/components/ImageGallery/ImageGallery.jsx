@@ -26,8 +26,8 @@ class ImageGallery extends Component {
     const { page } = this.state;
     const prevPage = prevState.page;
     if (prevQuery !== query || prevPage !== page) {
-      this.setState({ status: 'panding' });
       try {
+        this.setState({ status: 'panding' });
         const galleryItems = fetchGalleryImages(query, page);
         galleryItems.then(data => {
           const { hits } = data;
