@@ -18,6 +18,7 @@ class ImageGallery extends Component {
     gallery: [],
     page: 1,
     error: null,
+    totalHits: 0,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -25,35 +26,47 @@ class ImageGallery extends Component {
     const prevQuery = prevProps.query;
     const { page } = this.state;
     const prevPage = prevState.page;
-    if (prevQuery !== query || prevPage !== page) {
-      try {
-        this.setState({ status: 'panding' });
-        const galleryItems = fetchGalleryImages(query, page);
-        galleryItems.then(data => {
-          const { hits } = data;
-          if (!hits.length) {
-            toast.warn('Please, enter correct search word!');
-            return this.setState({ status: 'idle' });
-          }
-          const newItems = hits.map(
-            ({ id, tags, webformatURL, largeImageURL }) => ({
-              id,
-              tags,
-              webformatURL,
-              largeImageURL,
-            })
-          );
-          this.setState(prevState => ({
-            gallery: [...prevState.gallery, ...newItems],
-            status: 'resolved',
-          }));
-        });
-      } catch (error) {
-        console.log(error);
-        this.setState({ error, status: 'rejected' });
-      }
+
+    if (prevQuery !== query) {
+      this.setState({ status: 'pending',gallery:[]});
+      this.fetchImages(query,page);
+    } else if (prevPage !== page) {
+      this.setState({ status: 'pending' });
+      this.fetchImages(query,page);
     }
   }
+
+  fetchImages = () => {
+    const { query } = this.props;
+    const { page } = this.state;
+    try {
+      const galleryItems = fetchGalleryImages(query, page);
+      galleryItems.then(data => {
+        const { hits, totalHits } = data;
+        if (!hits.length) {
+          toast.warn('Please, enter correct search word!');
+          return this.setState({ status: 'idle' });
+        }
+        const newItems = hits.map(
+          ({ id, tags, webformatURL, largeImageURL }) => ({
+            id,
+            tags,
+            webformatURL,
+            largeImageURL,
+          })
+        );
+        this.setState(prevState => ({
+          gallery: [...prevState.gallery, ...newItems],
+          totalHits,
+          status: 'resolved',
+        }));
+      });
+    } catch (error) {
+      console.log(error);
+      this.setState({ error, status: 'rejected', totalHits: 0 });
+    }
+  };
+
   loadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
@@ -61,7 +74,7 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const { gallery, status } = this.state;
+    const { gallery, status,totalHits } = this.state;
 
     if (status === 'idle') {
       return <Message>Please enter a word to start the search</Message>;
@@ -79,13 +92,14 @@ class ImageGallery extends Component {
             {gallery.map(({ id, largeImageURL, webformatURL, tags }) => (
               <ImageGalleryItem
                 key={id}
+                id={id}
                 largeImageURL={largeImageURL}
                 webformatURL={webformatURL}
                 tags={tags}
               />
             ))}
           </Gallery>
-          {gallery.length > 0 && <Button onClick={this.loadMore} />}
+          {gallery.length <totalHits && <Button onClick={this.loadMore} />}
         </>
       );
     }

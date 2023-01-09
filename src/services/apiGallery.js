@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const baseURL = 'https://pixabay.com/api/';
 
-export function fetchGalleryImages(query, page) {
+export async function fetchGalleryImages(query,page) {
   const PARAMS = new URLSearchParams({
     q: `${query}`,
     page: `${page}`,
@@ -14,7 +14,7 @@ export function fetchGalleryImages(query, page) {
     per_page:12,
   });
   const API = baseURL+"?"+PARAMS;
-  const response = axios.get(API);
+  const response =  await axios.get(API);
   return response.data;
 }
 fetchGalleryImages.propTypes = {
