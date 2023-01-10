@@ -28,11 +28,13 @@ class ImageGallery extends Component {
     const prevPage = prevState.page;
 
     if (prevQuery !== query) {
-      this.setState({ status: 'pending',gallery:[]});
-      this.fetchImages(query,page);
+      this.setState({ status: 'pending', gallery: [], page: 1 });
+      if (page === 1) {
+        this.fetchImages(query, page);
+      }
     } else if (prevPage !== page) {
       this.setState({ status: 'pending' });
-      this.fetchImages(query,page);
+      this.fetchImages(query, page);
     }
   }
 
@@ -74,7 +76,7 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const { gallery, status,totalHits } = this.state;
+    const { gallery, status, totalHits } = this.state;
 
     if (status === 'idle') {
       return <Message>Please enter a word to start the search</Message>;
@@ -99,7 +101,7 @@ class ImageGallery extends Component {
               />
             ))}
           </Gallery>
-          {gallery.length <totalHits && <Button onClick={this.loadMore} />}
+          {gallery.length < totalHits && <Button onClick={this.loadMore} />}
         </>
       );
     }
