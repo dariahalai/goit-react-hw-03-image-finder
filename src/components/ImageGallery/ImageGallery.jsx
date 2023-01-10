@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import  React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem';
@@ -58,14 +58,14 @@ class ImageGallery extends Component {
           })
         );
         this.setState(prevState => ({
+          status: 'resolved',
           gallery: [...prevState.gallery, ...newItems],
           totalHits,
-          status: 'resolved',
         }));
       });
     } catch (error) {
       console.log(error);
-      this.setState({ error, status: 'rejected', totalHits: 0 });
+      this.setState({ status: 'rejected', error, totalHits: 0 });
     }
   };
 

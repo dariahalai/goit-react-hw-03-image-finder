@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import  React, { Component } from 'react';
 
 import { ToastContainer } from 'react-toastify';
 import ImageGallery from './ImageGallery';
