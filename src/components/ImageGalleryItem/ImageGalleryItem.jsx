@@ -1,5 +1,5 @@
 import Modal from 'components/Modal';
-import  React, { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { GalleryItem, GalleryItemImage } from './ImageGalleryItem.styled';
 import PropTypes from 'prop-types';
 class ImageGalleryItem extends PureComponent {
@@ -24,21 +24,14 @@ class ImageGalleryItem extends PureComponent {
     const { showModal } = this.state;
     const { id, largeImageURL, webformatURL, tags } = this.props;
     return (
-      <>
-        <GalleryItem >
-          <GalleryItemImage
-            id={id}
-            src={webformatURL}
-            alt={tags}
-            onClick={this.toggleModal}
-          />
-        </GalleryItem>
+      <GalleryItem onClick={this.toggleModal}>
+        <GalleryItemImage id={id} src={webformatURL} alt={tags} large={largeImageURL} />
         {showModal && (
           <Modal onClose={this.toggleModal}>
             <img src={largeImageURL} alt={tags} />
           </Modal>
         )}
-      </>
+      </GalleryItem>
     );
   }
 }
