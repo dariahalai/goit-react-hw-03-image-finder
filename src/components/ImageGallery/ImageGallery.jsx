@@ -33,7 +33,7 @@ class ImageGallery extends Component {
         this.fetchImages(query, page);
       }
     } else if (prevPage !== page) {
-      this.setState({ status: 'pending' });
+      this.setState({ loading: true });
       this.fetchImages(query, page);
     }
   }
